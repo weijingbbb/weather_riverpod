@@ -38,7 +38,7 @@ class _SearchPageState extends State<SearchPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: TextFormField(
-                    initialValue: 'guangzhou',
+                    initialValue: 'beijing',
                     autofocus: true,
                     style: const TextStyle(fontSize: 18.0),
                     decoration: const InputDecoration(
