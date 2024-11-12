@@ -7,6 +7,7 @@ import 'package:weather_riverpod/pages/home/providers/weather_provider.dart';
 import 'package:weather_riverpod/pages/home/widgets/error_dialog.dart';
 import 'package:weather_riverpod/pages/home/widgets/show_weather.dart';
 import 'package:weather_riverpod/pages/search/search_page.dart';
+import 'package:weather_riverpod/pages/temp_settings/temp_settings_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -46,6 +47,16 @@ class _HomePageState extends ConsumerState<HomePage> {
       appBar: AppBar(
         title: const Text('小魏天气'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TempSettingsPage(),
+                ),
+              );
+            },
+          ),
           IconButton(
             onPressed: () async {
               city = await Navigator.of(context).push(
