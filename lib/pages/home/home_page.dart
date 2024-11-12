@@ -13,6 +13,8 @@ import 'package:weather_riverpod/pages/home/widgets/show_weather.dart';
 import 'package:weather_riverpod/pages/search/search_page.dart';
 import 'package:weather_riverpod/pages/temp_settings/temp_settings_page.dart';
 
+import 'providers/weather_state.dart';
+
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -33,30 +35,51 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<AsyncValue<CurrentWeather?>>(
+    // Async Value------------------------
+    // ref.listen<AsyncValue<CurrentWeather?>>(
+    //   weatherProvider,
+    //   (previous, next) {
+    //     next.whenOrNull(
+    //       data: (CurrentWeather? currentWeather) {
+    //         if (currentWeather == null) {
+    //           return;
+    //         }
+    //         final weather = AppWeather.fromCurrentWeather(currentWeather);
+    //         if (weather.temp < kWarmOrNot) {
+    //           ref.read(themeProvider.notifier).changeTheme(const DarkTheme());
+    //         } else {
+    //           ref.read(themeProvider.notifier).changeTheme(const LightTheme());
+    //         }
+    //       },
+    //       error: (error, stackTrace) {
+    //         errorDialog(context, (error as CustomError).errMsg);
+    //       },
+    //     );
+    //   },
+    // );
+    // 密封类----------------------------
+    ref.listen<WeatherState>(
       weatherProvider,
       (previous, next) {
-        next.whenOrNull(
-          data: (CurrentWeather? currentWeather) {
-            if (currentWeather == null) {
-              return;
-            }
+        switch (next) {
+          case WeatherStateFailure(error: CustomError error):
+            errorDialog(context, error.errMsg);
+          case WeatherStateSuccess(
+              currentWeather: CurrentWeather currentWeather
+            ):
             final weather = AppWeather.fromCurrentWeather(currentWeather);
+
             if (weather.temp < kWarmOrNot) {
               ref.read(themeProvider.notifier).changeTheme(const DarkTheme());
             } else {
               ref.read(themeProvider.notifier).changeTheme(const LightTheme());
             }
-          },
-          error: (error, stackTrace) {
-            errorDialog(context, (error as CustomError).errMsg);
-          },
-        );
+          case _:
+        }
       },
     );
 
     final weatherState = ref.watch(weatherProvider);
-    print('homepage----${weatherState.toStr}');
 
     return Scaffold(
       appBar: AppBar(
