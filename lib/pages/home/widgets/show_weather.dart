@@ -4,7 +4,10 @@ import 'package:weather_riverpod/models/current_weather/app_weather.dart';
 import 'package:weather_riverpod/models/current_weather/current_weather.dart';
 import 'package:weather_riverpod/models/custom_error/custom_error.dart';
 
+import 'format_text.dart';
 import 'select_city.dart';
+import 'show_icon.dart';
+import 'show_temperature.dart';
 
 class ShowWeather extends ConsumerWidget {
   final AsyncValue<CurrentWeather?> weatherState;
@@ -54,27 +57,38 @@ class ShowWeather extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  '${appWeather.temp}',
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
+                ShowTemperature(
+                  temperature: appWeather.temp,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.bold,
                 ),
                 const SizedBox(width: 20.0),
                 Column(
                   children: [
-                    Text(
-                      '${appWeather.tempMax}',
-                      style: const TextStyle(fontSize: 16),
+                    ShowTemperature(
+                      temperature: appWeather.tempMax,
+                      fontSize: 16.0,
                     ),
                     const SizedBox(height: 10),
-                    Text(
-                      '${appWeather.tempMin}',
-                      style: const TextStyle(fontSize: 16),
+                    ShowTemperature(
+                      temperature: appWeather.tempMin,
+                      fontSize: 16.0,
                     ),
                   ],
                 ),
+              ],
+            ),
+            const SizedBox(height: 40.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Spacer(),
+                ShowIcon(icon: appWeather.icon),
+                Expanded(
+                  flex: 3,
+                  child: FormatText(description: appWeather.description),
+                ),
+                const Spacer(),
               ],
             ),
           ],
