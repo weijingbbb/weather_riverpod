@@ -23,21 +23,45 @@ class Weather extends _$Weather {
   //   });
   // }
   // ----------------使用密封类进行处理数据------------------
+  // @override
+  // WeatherState build() {
+  //   return const WeatherStateInitial();
+  // }
+
+  // Future<void> fetchWeather(String city) async {
+  //   state = const WeatherStateLoading();
+
+  //   try {
+  //     final CurrentWeather currentWeather =
+  //         await ref.read(weatherRepositoryProvider).fetchWeather(city);
+
+  //     state = WeatherStateSuccess(currentWeather: currentWeather);
+  //   } on CustomError catch (error) {
+  //     state = WeatherStateFailure(error: error);
+  //   }
+  // }
+  // 枚举---------------------------
   @override
   WeatherState build() {
-    return const WeatherStateInitial();
+    return WeatherState.initial();
   }
 
   Future<void> fetchWeather(String city) async {
-    state = const WeatherStateLoading();
+    state = state.copyWith(status: WeatherStatus.loading);
 
     try {
       final CurrentWeather currentWeather =
           await ref.read(weatherRepositoryProvider).fetchWeather(city);
 
-      state = WeatherStateSuccess(currentWeather: currentWeather);
+      state = state.copyWith(
+        status: WeatherStatus.success,
+        currentWeather: currentWeather,
+      );
     } on CustomError catch (error) {
-      state = WeatherStateFailure(error: error);
+      state = state.copyWith(
+        status: WeatherStatus.failure,
+        error: error,
+      );
     }
   }
 }
