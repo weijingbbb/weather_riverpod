@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weather_riverpod/constants/constants.dart';
 import 'package:weather_riverpod/extensions/async_value_xx.dart';
+import 'package:weather_riverpod/models/current_weather/app_weather.dart';
 import 'package:weather_riverpod/models/current_weather/current_weather.dart';
 import 'package:weather_riverpod/models/custom_error/custom_error.dart';
+import 'package:weather_riverpod/pages/home/providers/theme_provider.dart';
+import 'package:weather_riverpod/pages/home/providers/theme_state.dart';
 import 'package:weather_riverpod/pages/home/providers/weather_provider.dart';
 import 'package:weather_riverpod/pages/home/widgets/error_dialog.dart';
 import 'package:weather_riverpod/pages/home/widgets/show_weather.dart';
@@ -33,6 +37,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       weatherProvider,
       (previous, next) {
         next.whenOrNull(
+          data: (CurrentWeather? currentWeather) {
+            if (currentWeather == null) {
+              return;
+            }
+            final weather = AppWeather.fromCurrentWeather(currentWeather);
+            if (weather.temp < kWarmOrNot) {
+              ref.read(themeProvider.notifier).changeTheme(const DarkTheme());
+            } else {
+              ref.read(themeProvider.notifier).changeTheme(const LightTheme());
+            }
+          },
           error: (error, stackTrace) {
             errorDialog(context, (error as CustomError).errMsg);
           },
